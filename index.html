@@ -274,50 +274,12 @@ select {
       <div class="section-header">
         <div class="section-icon">01</div>
         <span class="section-title">Traffic</span>
-        
       </div>
 
       <div class="field">
-        <label>AADT </label>
-        <input type="number" id="aadt" value="10000" min="100" step="500"/>
-      </div>
-
-      <div class="field-row">
-        <div class="field">
-          <label>Truck Percentage </label>
-          <input type="number" id="truck_pct" value="15" min="1" max="60" step="1"/>
-        </div>
-        <div class="field">
-          <label>Design Life </label>
-          <input type="number" id="design_life" value="20" min="5" max="50" step="5"/>
-        </div>
-      </div>
-
-      <div class="field-row">
-        <div class="field">
-          <label>Growth Rate </label>
-          <input type="number" id="growth_rate" value="4" min="0" max="10" step="0.5"/>
-        </div>
-        <div class="field">
-          <label>No. of Lanes</label>
-          <select id="lanes">
-            <option value="1">1 Lane</option>
-            <option value="2" selected>2 Lanes</option>
-            <option value="4">4 Lanes</option>
-            <option value="6">6+ Lanes</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="field">
-        <label>Road Class — Truck Factor (EF)</label>
-        <select id="truck_factor">
-          <option value="0.5">Local / Residential &nbsp;· EF = 0.5</option>
-          <option value="1.0" selected>Arterial / Primary &nbsp;· EF = 1.0</option>
-          <option value="1.5">Expressway &nbsp;· EF = 1.5</option>
-          <option value="2.0">Interstate / Heavy &nbsp;· EF = 2.0</option>
-        </select>
-        
+        <label>Design ESAL &nbsp; W<sub>18</sub> <span class="src">18-kip equivalent single axle loads</span></label>
+        <input type="number" id="w18_input" value="5100000" min="10000" step="100000"/>
+        <div class="hint">Total W18 over design life. Use axle load analysis to determine this value.</div>
       </div>
     </div>
 
@@ -544,8 +506,6 @@ var CEMENT_K = {
   200: {4:470, 6:640, 8:830, 10:999}
 };
 
-var LDF_MAP = {1:1.0, 2:1.0, 4:0.9, 6:0.8};
-
 /* ════════════════════════════════════════════
    UI HELPERS
 ════════════════════════════════════════════ */
@@ -622,6 +582,7 @@ function updateCompositeK() {
 ════════════════════════════════════════════ */
 
 function rhsEq1221(D, Zr, S0, dPSI, pt, Sc, Cd, J, Ec, k) {
+  if (dPSI <= 0) return -999;
   var t1 = Zr * S0;
   var t2 = 7.35 * Math.log10(D + 1) - 0.06;
   var t3 = Math.log10(dPSI / 3.0) / (1 + 1.624e7 / Math.pow(D + 1, 8.46));
@@ -639,7 +600,7 @@ function solveD(W18, Sc, Ec, k, R, pt, J, Cd) {
   var dPSI   = 4.5 - pt;
   var target = Math.log10(W18);
   var D      = 4.0;
-  while (D <= 40) {
+  while (D <= 80) {
     if (rhsEq1221(D, Zr, S0, dPSI, pt, Sc, Cd, J, Ec, k) >= target) {
       return { D:D, Zr:Zr, S0:S0, dPSI:dPSI, target:target };
     }
@@ -659,12 +620,7 @@ function runDesign() {
 }
 
 function doCalc() {
-  var AADT      = parseFloat(document.getElementById('aadt').value);
-  var truck_pct = parseFloat(document.getElementById('truck_pct').value) / 100;
-  var n         = parseFloat(document.getElementById('design_life').value);
-  var r         = parseFloat(document.getElementById('growth_rate').value) / 100;
-  var lanes     = parseInt(document.getElementById('lanes').value);
-  var EF        = parseFloat(document.getElementById('truck_factor').value);
+  var W18_direct = parseFloat(document.getElementById('w18_input').value);
   var k         = parseFloat(document.getElementById('k_display').value);
   var fc        = parseFloat(document.getElementById('fc').value);
   var Ec        = 57000 * Math.sqrt(fc);
@@ -678,13 +634,29 @@ function doCalc() {
   var J  = parseFloat(jInp.value);
   var Cd = parseFloat(cdInp.value);
 
-  if ([AADT,truck_pct,n,k,fc,Ec,Sc].some(function(v){return isNaN(v)||v<=0;})) {
+  if ([W18,k,fc,Ec,Sc].some(function(v){return isNaN(v)||v<=0;})) {
     showError('Please check all inputs — some values are missing or invalid.');
     return;
   }
 
+  if (pt >= 4.5) {
+    showError('Terminal PSI pt = ' + pt + ' must be less than 4.5 (initial serviceability). Please select a lower value.');
+    return;
+  }
+
   // W18 calculation
+  // Validate dPSI
+  if (pt >= 4.5) {
+    showError('Terminal PSI (pt = ' + pt + ') must be less than initial PSI (pi = 4.5). Please select a lower pt value.');
+    return;
+  }
   var GF   = r === 0 ? n : ((Math.pow(1 + r, n) - 1) / r);
+
+  // Validate pt < pi
+  if (pt >= 4.5) {
+    showError('Terminal PSI (pt = ' + pt + ') must be less than 4.5. Please select a lower pt value.');
+    return;
+  }
   var LDF  = LDF_MAP[lanes] || 0.9;
   var ADTT = AADT * truck_pct;
   var W18  = ADTT * EF * 365 * GF * LDF;
@@ -692,7 +664,7 @@ function doCalc() {
   // Solve D
   var sol = solveD(W18, Sc, Ec, k, R, pt, J, Cd);
   if (!sol) {
-    showError('No valid thickness found (D > 40 in). W18 = ' + fmtE(W18) + '. Try increasing Sc, k, or reducing traffic.');
+    showError('W18 = ' + fmtE(W18) + ' exceeds design capacity (D > 80 in). This traffic volume is unrealistically high for a single pavement section. Please check your inputs.');
     return;
   }
 
@@ -701,8 +673,7 @@ function doCalc() {
   var D_mm      = D_rounded * 25.4;
 
   renderResults({
-    AADT:AADT, truck_pct:truck_pct, n:n, r:r, lanes:lanes, EF:EF,
-    GF:GF, LDF:LDF, ADTT:ADTT, W18:W18,
+    W18:W18,
     k:k, fc:fc, Ec:Ec, Sc:Sc,
     R:R, pt:pt, J:J, Cd:Cd,
     Zr:sol.Zr, S0:sol.S0, dPSI:sol.dPSI,
