@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RIGIDPAVE — AASHTO Rigid Pavement Design</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:       #0c0d13;
+  --surface:  #12131c;
+  --surface2: #191a26;
+  --surface3: #20213a;
+  --border:   #222336;
+  --border2:  #2c2e4a;
+  --text:     #dde1f0;
+  --muted:    #565878;
+  --accent:   #5b7cfa;
+  --accent2:  #38bdf8;
+  --green:    #10b981;
+  --red:      #ef4444;
+  --orange:   #f59e0b;
+  --mono:     'JetBrains Mono', monospace;
+  --sans:     'Inter', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 13px; min-height: 100vh; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+/* HEADER */
+header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px; height: 58px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+}
+.logo { display: flex; align-items: center; gap: 12px; }
+.logo-mark {
+  width: 34px; height: 34px; background: var(--accent);
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 11px; font-weight: 500; color: #fff;
+}
+.logo-text { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
+.logo-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.header-tag {
+  font-family: var(--mono); font-size: 10px; color: var(--accent);
+  border: 1px solid rgba(91,124,250,0.25); background: rgba(91,124,250,0.07);
+  padding: 5px 12px; border-radius: 4px; letter-spacing: 0.5px;
+}
+
+
+/* LAYOUT */
+.app { display: grid; grid-template-columns: 400px 1fr; height: calc(100vh - 58px); }
+
+/* SIDEBAR */
+.sidebar {
+  background: var(--surface); border-right: 1px solid var(--border);
+  overflow-y: auto; display: flex; flex-direction: column;
+}
+.section { border-bottom: 1px solid var(--border); padding: 20px 24px; }
+.section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+.section-icon {
+  width: 24px; height: 24px; background: var(--surface2);
+  border: 1px solid var(--border2); border-radius: 5px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 9px; color: var(--accent); font-weight: 500; flex-shrink: 0;
+}
+.section-title { font-size: 11px; font-weight: 600; color: var(--text); text-transform: uppercase; letter-spacing: 0.9px; }
+
+
+.field { margin-bottom: 14px; }
+.field:last-child { margin-bottom: 0; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+label { display: block; font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; }
+label .src { font-family: var(--mono); font-size: 9px; color: rgba(56,189,248,0.6); text-transform: none; font-weight: 400; margin-left: 6px; }
+
+input[type="number"], select {
+  width: 100%; background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 6px; color: var(--text); font-family: var(--mono);
+  font-size: 13px; padding: 9px 12px; outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -moz-appearance: textfield; appearance: none; -webkit-appearance: none;
+}
+input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+input[type="number"]:focus, select:focus {
+  border-color: var(--accent); box-shadow: 0 0 0 3px rgba(91,124,250,0.13);
+}
+input[readonly] { background: rgba(56,189,248,0.05); color: var(--accent2); cursor: default; border-color: rgba(56,189,248,0.15); }
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23565878' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; cursor: pointer;
+}
+
+.hint { font-family: var(--mono); font-size: 9px; color: var(--muted); margin-top: 5px; line-height: 1.5; }
+
+/* K display pill */
+.k-pill {
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(56,189,248,0.05); border: 1px solid rgba(56,189,248,0.15);
+  border-radius: 6px; padding: 9px 14px; margin-top: 8px;
+}
+.k-pill-label { font-size: 10px; color: var(--muted); font-weight: 500; }
+.k-pill-value { font-family: var(--mono); font-size: 14px; color: var(--accent2); font-weight: 500; }
+
+/* RADIO */
+.radio-group { display: flex; flex-direction: column; gap: 6px; }
+.radio-option {
+  display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px;
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 6px; cursor: pointer; transition: border-color 0.2s, background 0.2s;
+}
+.radio-option:hover { border-color: rgba(91,124,250,0.35); background: var(--surface3); }
+.radio-option.selected { border-color: var(--accent); background: rgba(91,124,250,0.08); }
+.radio-option input[type="radio"] { display: none; }
+.radio-dot {
+  width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--border2);
+  flex-shrink: 0; margin-top: 2px; transition: all 0.2s;
+}
+.radio-option.selected .radio-dot { border-color: var(--accent); background: var(--accent); box-shadow: 0 0 0 3px rgba(91,124,250,0.2); }
+.radio-label { font-family: var(--mono); font-size: 12px; color: var(--text); font-weight: 500; }
+.radio-sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+/* RUN */
+.run-wrap {
+  padding: 18px 24px;
+  background: var(--surface);
+  position: sticky; bottom: 0; border-top: 1px solid var(--border);
+}
+.run-btn {
+  width: 100%; height: 46px; background: var(--accent);
+  border: none; border-radius: 8px; color: #fff;
+  font-family: var(--sans); font-size: 13px; font-weight: 600; letter-spacing: 0.4px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  gap: 8px; transition: opacity 0.2s, transform 0.1s; position: relative; overflow: hidden;
+}
+.run-btn:hover { opacity: 0.88; }
+.run-btn:active { transform: scale(0.98); }
+.run-btn.running .btn-label { opacity: 0; }
+.run-btn.running .spinner-el { opacity: 1; }
+.spinner-el {
+  position: absolute; width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
+  border-radius: 50%; animation: spin 0.7s linear infinite; opacity: 0; transition: opacity 0.2s;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* RESULTS */
+.results { background: var(--bg); overflow-y: auto; padding: 28px 32px; }
+.placeholder { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
+.placeholder-icon {
+  width: 64px; height: 64px; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 14px;
+  display: flex; align-items: center; justify-content: center; font-size: 28px;
+}
+.placeholder-text { text-align: center; font-size: 13px; line-height: 1.9; color: var(--muted); }
+.placeholder-text strong { color: var(--text); }
+
+/* D CARD */
+.d-card {
+  background: linear-gradient(135deg, #18234e 0%, #161724 100%);
+  border: 1px solid rgba(91,124,250,0.28); border-radius: 12px;
+  padding: 28px 32px; display: flex; align-items: center;
+  justify-content: space-between; margin-bottom: 24px;
+  position: relative; overflow: hidden;
+}
+.d-card::after {
+  content: ''; position: absolute; right: -40px; top: -40px;
+  width: 180px; height: 180px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(91,124,250,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.d-label { font-size: 10px; font-weight: 600; color: rgba(91,124,250,0.7); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 10px; }
+.d-value { font-family: var(--mono); font-size: 68px; font-weight: 500; color: #fff; line-height: 1; }
+.d-unit { font-family: var(--mono); font-size: 26px; color: var(--accent); margin-left: 8px; }
+.d-mm { font-family: var(--mono); font-size: 12px; color: rgba(255,255,255,0.35); margin-top: 10px; }
+.d-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; z-index: 1; }
+.d-badge {
+  font-family: var(--mono); font-size: 11px; color: var(--accent2);
+  background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.2);
+  padding: 7px 16px; border-radius: 20px;
+}
+
+/* SECTION TITLE */
+.result-title {
+  font-size: 10px; font-weight: 600; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.result-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* METRICS */
+.metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 24px; }
+.metric-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 14px 16px;
+}
+.metric-label { font-size: 10px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.metric-value { font-family: var(--mono); font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.3; }
+.metric-unit { font-size: 10px; color: var(--muted); font-family: var(--mono); margin-left: 3px; }
+.metric-src { font-family: var(--mono); font-size: 9px; color: rgba(56,189,248,0.45); margin-top: 5px; border-top: 1px solid var(--border); padding-top: 5px; }
+
+/* STEPS TABLE */
+.steps-table {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden; margin-bottom: 24px;
+}
+.steps-row {
+  display: grid; grid-template-columns: 36px 1fr 180px 140px;
+  align-items: center; padding: 10px 16px;
+  border-bottom: 1px solid var(--border); transition: background 0.15s;
+}
+.steps-row:last-child { border-bottom: none; }
+.steps-row:hover { background: var(--surface2); }
+.steps-row.header {
+  background: var(--surface2); font-size: 9px; color: var(--muted);
+  letter-spacing: 0.5px; font-weight: 600; text-transform: uppercase;
+}
+.step-num { font-family: var(--mono); font-size: 10px; color: var(--accent); }
+.step-param { font-size: 12px; color: var(--text); }
+.step-formula { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+.step-value { font-family: var(--mono); font-size: 12px; color: var(--accent2); text-align: right; }
+
+/* CROSS SECTION */
+.cross-section {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 20px 24px; margin-bottom: 24px;
+}
+.cross-section svg { width: 100%; display: block; }
+
+
+
+/* ERROR */
+.error-card {
+  background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.28);
+  border-radius: 8px; padding: 16px 20px; color: var(--red); font-size: 13px;
+}
+
+@keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+.fade-up   { animation: fadeUp 0.3s ease forwards; }
+.fade-up-2 { animation: fadeUp 0.3s 0.07s ease both; }
+.fade-up-3 { animation: fadeUp 0.3s 0.14s ease both; }
+.fade-up-4 { animation: fadeUp 0.3s 0.21s ease both; }
+.fade-up-5 { animation: fadeUp 0.3s 0.28s ease both; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark">RP</div>
+    <div>
+      <div class="logo-text">RIGIDPAVE</div>
+      <div class="logo-sub">AASHTO Rigid Pavement Thickness Design</div>
+    </div>
+  </div>
+  <div class="header-right">
+    
+    <span class="header-tag">AASHTO 1993</span>
+  </div>
+</header>
+
+<div class="app">
+
+  <!-- ── SIDEBAR ── -->
+  <div class="sidebar">
+
+    <!-- 01 TRAFFIC -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon">01</div>
+        <span class="section-title">Traffic</span>
+        
+      </div>
+
+      <div class="field">
+        <label>AADT </label>
+        <input type="number" id="aadt" value="10000" min="100" step="500"/>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Truck Percentage </label>
+          <input type="number" id="truck_pct" value="15" min="1" max="60" step="1"/>
+        </div>
+        <div class="field">
+          <label>Design Life </label>
+          <input type="number" id="design_life" value="20" min="5" max="50" step="5"/>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Growth Rate </label>
+          <input type="number" id="growth_rate" value="4" min="0" max="10" step="0.5"/>
+        </div>
+        <div class="field">
+          <label>No. of Lanes</label>
+          <select id="lanes">
+            <option value="1">1 Lane</option>
+            <option value="2" selected>2 Lanes</option>
+            <option value="4">4 Lanes</option>
+            <option value="6">6+ Lanes</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Road Class — Truck Factor (EF)</label>
+        <select id="truck_factor">
+          <option value="0.5">Local / Residential &nbsp;· EF = 0.5</option>
+          <option value="1.0" selected>Arterial / Primary &nbsp;· EF = 1.0</option>
+          <option value="1.5">Expressway &nbsp;· EF = 1.5</option>
+          <option value="2.0">Interstate / Heavy &nbsp;· EF = 2.0</option>
+        </select>
+        
+      </div>
+    </div>
+
+    <!-- 02 SUBGRADE & SUBBASE -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon">02</div>
+        <span class="section-title">Subgrade &amp; Subbase</span>
+        
+      </div>
+
+      <div class="field">
+        <label>Subgrade Type </label>
+        <select id="subgrade_type" onchange="updateCompositeK()">
+          <option value="50">Fine-grained / Clay — Low &nbsp;(k = 50 pci)</option>
+          <option value="100" selected>Silty-sandy Clay — Low-Med &nbsp;(k = 100 pci)</option>
+          <option value="200">Clean Sand &amp; Gravel — High &nbsp;(k = 200 pci)</option>
+          <option value="300">Stabilized Subgrade — Very High &nbsp;(k = 300 pci)</option>
+        </select>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Subbase</label>
+          <select id="subbase_type" onchange="onSubbaseTypeChange()">
+            <option value="none">No Subbase</option>
+            <option value="untreated" selected>Untreated Granular</option>
+            <option value="cement">Cement-Treated</option>
+          </select>
+        </div>
+        <div class="field" id="sb_thick_wrap">
+          <label>Thickness </label>
+          <select id="subbase_thickness" onchange="updateCompositeK()">
+            <option value="4" selected>4 in</option>
+            <option value="6">6 in</option>
+            <option value="9">9 in</option>
+            <option value="12">12 in</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="k-pill">
+        <div>
+          <div class="k-pill-label">Composite Design k</div>
+          
+        </div>
+        <div>
+          <span class="k-pill-value" id="k_pill_val">130</span>
+          <span style="font-family:var(--mono);font-size:11px;color:var(--muted)"> pci</span>
+        </div>
+      </div>
+      <input type="hidden" id="k_display" value="130"/>
+    </div>
+
+    <!-- 03 CONCRETE -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon">03</div>
+        <span class="section-title">Concrete</span>
+        
+      </div>
+
+      <div class="field">
+        <label>Compressive Strength f'c </label>
+        <input type="number" id="fc" value="4000" min="2500" max="8000" step="500" oninput="calcEc()"/>
+      </div>
+
+      <div class="field">
+        <label>Elastic Modulus Ec </label>
+        <input type="number" id="ec_display" value="3604997" readonly/>
+      </div>
+
+      <div class="field">
+        <label>Modulus of Rupture Sc' </label>
+        <input type="number" id="sc" value="650" min="400" max="900" step="25"/>
+      </div>
+    </div>
+
+    <!-- 04 DESIGN PARAMETERS -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon">04</div>
+        <span class="section-title">Design Parameters</span>
+        
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Reliability R </label>
+          <select id="reliability">
+            <option value="75">75% — Low</option>
+            <option value="85">85% — Secondary</option>
+            <option value="90">90% — Primary</option>
+            <option value="95" selected>95% — Major</option>
+            <option value="99">99% — Interstate</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Terminal PSI p<sub>t</sub></label>
+          <select id="pt">
+            <option value="3.0">3.0 — Excellent</option>
+            <option value="2.5" selected>2.5 — Good</option>
+            <option value="2.0">2.0 — Fair</option>
+            <option value="1.5">1.5 — Poor</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Load Transfer Coeff. J </label>
+        <div class="radio-group" id="j_group">
+          <label class="radio-option selected" onclick="selectRadio('j_group',this,'3.2')">
+            <input type="radio" name="J" value="3.2" checked/>
+            <div class="radio-dot"></div>
+            <div>
+              <div class="radio-label">J = 3.2</div>
+              <div class="radio-sub">JPCP + Asphalt shoulder + Dowels</div>
+            </div>
+          </label>
+          <label class="radio-option" onclick="selectRadio('j_group',this,'3.8')">
+            <input type="radio" name="J" value="3.8"/>
+            <div class="radio-dot"></div>
+            <div>
+              <div class="radio-label">J = 3.8 – 4.4</div>
+              <div class="radio-sub">JPCP + Asphalt shoulder, no dowels</div>
+            </div>
+          </label>
+          <label class="radio-option" onclick="selectRadio('j_group',this,'2.8')">
+            <input type="radio" name="J" value="2.8"/>
+            <div class="radio-dot"></div>
+            <div>
+              <div class="radio-label">J = 2.5 – 3.1</div>
+              <div class="radio-sub">JPCP + Tied PCC shoulder + Dowels</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <div class="field" style="margin-top:14px">
+        <label>Drainage Coefficient C<sub>d</sub> </label>
+        <div class="radio-group" id="cd_group">
+          <label class="radio-option" onclick="selectRadio('cd_group',this,'1.2')">
+            <input type="radio" name="Cd" value="1.2"/>
+            <div class="radio-dot"></div>
+            <div>
+              <div class="radio-label">C<sub>d</sub> = 1.20</div>
+              <div class="radio-sub">Excellent — water removed within 2 hrs</div>
+            </div>
+          </label>
+          <label class="radio-option selected" onclick="selectRadio('cd_group',this,'1.0')">
+            <input type="radio" name="Cd" value="1.0" checked/>
+            <div class="radio-dot"></div>
+            <div>
+              <div class="radio-label">C<sub>d</sub> = 1.00</div>
+              <div class="radio-sub">Good — water removed within 1 day</div>
+            </div>
+          </label>
+          <label class="radio-option" onclick="selectRadio('cd_group',this,'0.9')">
+            <input type="radio" name="Cd" value="0.9"/>
+            <div class="radio-dot"></div>
+            <div>
+              <div class="radio-label">C<sub>d</sub> = 0.90</div>
+              <div class="radio-sub">Fair — water removed within 1 week</div>
+            </div>
+          </label>
+          <label class="radio-option" onclick="selectRadio('cd_group',this,'0.8')">
+            <input type="radio" name="Cd" value="0.8"/>
+            <div class="radio-dot"></div>
+            <div>
+              <div class="radio-label">C<sub>d</sub> = 0.80</div>
+              <div class="radio-sub">Poor — never drains</div>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="run-wrap">
+      <button class="run-btn" id="run-btn" onclick="runDesign()">
+        <div class="spinner-el"></div>
+        <span class="btn-label">&#9654;&nbsp;&nbsp;Calculate Thickness</span>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ── RESULTS ── -->
+  <div class="results" id="results-panel">
+    <div class="placeholder" id="placeholder">
+      <div class="placeholder-icon">&#128208;</div>
+      <div class="placeholder-text">
+        Enter design parameters on the left<br/>
+        and click <strong>Calculate Thickness</strong><br/>
+        to run <strong>AASHTO 1993</strong>
+      </div>
+    </div>
+    <div id="results-content" style="display:none"></div>
+  </div>
+
+</div>
+
+<script>
+/* ════════════════════════════════════════════
+   LOOKUP TABLES
+════════════════════════════════════════════ */
+
+var ZR_TABLE = {
+  50:0.000, 75:-0.674, 80:-0.841, 85:-1.037,
+  90:-1.282, 91:-1.340, 92:-1.405, 93:-1.476,
+  94:-1.555, 95:-1.645, 96:-1.751, 97:-1.881,
+  98:-2.054, 99:-2.327
+};
+
+var UNTREATED_K = {
+  50:  {4:65,  6:75,  9:85,  12:110},
+  100: {4:130, 6:140, 9:160, 12:190},
+  200: {4:220, 6:230, 9:270, 12:320},
+  300: {4:320, 6:330, 9:370, 12:430}
+};
+
+var CEMENT_K = {
+  50:  {4:170, 6:230, 8:310, 10:390},
+  100: {4:280, 6:400, 8:520, 10:640},
+  200: {4:470, 6:640, 8:830, 10:999}
+};
+
+var LDF_MAP = {1:1.0, 2:1.0, 4:0.9, 6:0.8};
+
+/* ════════════════════════════════════════════
+   UI HELPERS
+════════════════════════════════════════════ */
+
+function selectRadio(groupId, el, val) {
+  document.querySelectorAll('#' + groupId + ' .radio-option').forEach(function(o) {
+    o.classList.remove('selected');
+  });
+  el.classList.add('selected');
+  var inp = el.querySelector('input[type=radio]');
+  if (inp) inp.checked = true;
+}
+
+function calcEc() {
+  var fc = parseFloat(document.getElementById('fc').value);
+  if (!isNaN(fc) && fc > 0) {
+    document.getElementById('ec_display').value = Math.round(57000 * Math.sqrt(fc));
+  }
+}
+
+function nearest(obj, val) {
+  var keys = Object.keys(obj).map(Number).sort(function(a,b){return a-b;});
+  return keys.reduce(function(prev, curr) {
+    return Math.abs(curr - val) < Math.abs(prev - val) ? curr : prev;
+  });
+}
+
+function onSubbaseTypeChange() {
+  var type = document.getElementById('subbase_type').value;
+  var wrap = document.getElementById('sb_thick_wrap');
+  var sel  = document.getElementById('subbase_thickness');
+
+  if (type === 'none') {
+    wrap.style.visibility = 'hidden';
+  } else {
+    wrap.style.visibility = 'visible';
+    if (type === 'cement') {
+      sel.innerHTML = '<option value="4">4 in</option><option value="6">6 in</option><option value="8">8 in</option><option value="10">10 in</option>';
+    } else {
+      sel.innerHTML = '<option value="4">4 in</option><option value="6">6 in</option><option value="9">9 in</option><option value="12">12 in</option>';
+    }
+  }
+  updateCompositeK();
+}
+
+function updateCompositeK() {
+  var sgVal  = parseInt(document.getElementById('subgrade_type').value);
+  var type   = document.getElementById('subbase_type').value;
+  var th     = parseInt(document.getElementById('subbase_thickness').value);
+  var k, src;
+
+  if (type === 'none') {
+    k = sgVal;
+    src = '';
+  } else if (type === 'untreated') {
+    var sgKey = nearest(UNTREATED_K, sgVal);
+    var thKey = nearest(UNTREATED_K[sgKey], th);
+    k = UNTREATED_K[sgKey][thKey];
+    src = '';
+  } else {
+    var sgKey2 = nearest(CEMENT_K, sgVal);
+    var thKey2 = nearest(CEMENT_K[sgKey2], th);
+    k = CEMENT_K[sgKey2][thKey2];
+    src = '';
+  }
+
+  document.getElementById('k_display').value   = k;
+  document.getElementById('k_pill_val').textContent = k;
+  
+}
+
+/* ════════════════════════════════════════════
+   ENGINEERING CALCULATIONS
+════════════════════════════════════════════ */
+
+function rhsEq1221(D, Zr, S0, dPSI, pt, Sc, Cd, J, Ec, k) {
+  var t1 = Zr * S0;
+  var t2 = 7.35 * Math.log10(D + 1) - 0.06;
+  var t3 = Math.log10(dPSI / 3.0) / (1 + 1.624e7 / Math.pow(D + 1, 8.46));
+  var num = Sc * Cd * (Math.pow(D, 0.75) - 1.132);
+  var den = 215.63 * J * (Math.pow(D, 0.75) - 18.42 / Math.pow(Ec / k, 0.25));
+  if (den <= 0 || num <= 0) return -999;
+  var t4 = (4.22 - 0.32 * pt) * Math.log10(num / den);
+  return t1 + t2 + t3 + t4;
+}
+
+// Iterate D from 4 in upward in 0.05 in steps until RHS ≥ log(W18)
+function solveD(W18, Sc, Ec, k, R, pt, J, Cd) {
+  var Zr     = ZR_TABLE[R] || -1.645;
+  var S0     = 0.29;
+  var dPSI   = 4.5 - pt;
+  var target = Math.log10(W18);
+  var D      = 4.0;
+  while (D <= 40) {
+    if (rhsEq1221(D, Zr, S0, dPSI, pt, Sc, Cd, J, Ec, k) >= target) {
+      return { D:D, Zr:Zr, S0:S0, dPSI:dPSI, target:target };
+    }
+    D += 0.05;
+  }
+  return null;
+}
+
+/* ════════════════════════════════════════════
+   MAIN
+════════════════════════════════════════════ */
+
+function runDesign() {
+  var btn = document.getElementById('run-btn');
+  btn.classList.add('running');
+  setTimeout(function() { btn.classList.remove('running'); doCalc(); }, 500);
+}
+
+function doCalc() {
+  var AADT      = parseFloat(document.getElementById('aadt').value);
+  var truck_pct = parseFloat(document.getElementById('truck_pct').value) / 100;
+  var n         = parseFloat(document.getElementById('design_life').value);
+  var r         = parseFloat(document.getElementById('growth_rate').value) / 100;
+  var lanes     = parseInt(document.getElementById('lanes').value);
+  var EF        = parseFloat(document.getElementById('truck_factor').value);
+  var k         = parseFloat(document.getElementById('k_display').value);
+  var fc        = parseFloat(document.getElementById('fc').value);
+  var Ec        = 57000 * Math.sqrt(fc);
+  var Sc        = parseFloat(document.getElementById('sc').value);
+  var R         = parseInt(document.getElementById('reliability').value);
+  var pt        = parseFloat(document.getElementById('pt').value);
+  var jInp      = document.querySelector('input[name="J"]:checked');
+  var cdInp     = document.querySelector('input[name="Cd"]:checked');
+
+  if (!jInp || !cdInp) { showError('Please select J and Cd values.'); return; }
+  var J  = parseFloat(jInp.value);
+  var Cd = parseFloat(cdInp.value);
+
+  if ([AADT,truck_pct,n,k,fc,Ec,Sc].some(function(v){return isNaN(v)||v<=0;})) {
+    showError('Please check all inputs — some values are missing or invalid.');
+    return;
+  }
+
+  // W18 calculation
+  var GF   = r === 0 ? n : ((Math.pow(1 + r, n) - 1) / r);
+  var LDF  = LDF_MAP[lanes] || 0.9;
+  var ADTT = AADT * truck_pct;
+  var W18  = ADTT * EF * 365 * GF * LDF;
+
+  // Solve D
+  var sol = solveD(W18, Sc, Ec, k, R, pt, J, Cd);
+  if (!sol) {
+    showError('No valid thickness found (D > 40 in). W18 = ' + fmtE(W18) + '. Try increasing Sc, k, or reducing traffic.');
+    return;
+  }
+
+  var D         = sol.D;
+  var D_rounded = Math.ceil(D * 2) / 2;
+  var D_mm      = D_rounded * 25.4;
+
+  renderResults({
+    AADT:AADT, truck_pct:truck_pct, n:n, r:r, lanes:lanes, EF:EF,
+    GF:GF, LDF:LDF, ADTT:ADTT, W18:W18,
+    k:k, fc:fc, Ec:Ec, Sc:Sc,
+    R:R, pt:pt, J:J, Cd:Cd,
+    Zr:sol.Zr, S0:sol.S0, dPSI:sol.dPSI,
+    D:D, D_rounded:D_rounded, D_mm:D_mm, target:sol.target
+  });
+}
+
+/* ════════════════════════════════════════════
+   RENDER
+════════════════════════════════════════════ */
+
+function fmt(v, dec) { return v.toFixed(dec !== undefined ? dec : 2); }
+function fmtE(v) {
+  if (v >= 1e6) return (v/1e6).toFixed(2) + ' \u00d7 10\u2076';
+  if (v >= 1e3) return (v/1e3).toFixed(1) + 'k';
+  return v.toFixed(0);
+}
+
+function renderResults(p) {
+  document.getElementById('placeholder').style.display = 'none';
+  var c = document.getElementById('results-content');
+  c.style.display = 'block';
+
+  var html = '';
+
+  // ── D CARD ──
+  html += '<div class="d-card fade-up">';
+  html += '<div>';
+  html += '  <div class="d-label">Design Slab Thickness — Rounded to Nearest \u00bd"</div>';
+  html += '  <div><span class="d-value">' + p.D_rounded + '</span><span class="d-unit"> in</span></div>';
+  html += '  <div class="d-mm">' + Math.round(p.D_mm) + ' mm &nbsp;\u00b7&nbsp; Exact iteration: ' + fmt(p.D) + ' in</div>';
+  html += '</div>';
+  html += '<div class="d-right">';
+  html += '  <span class="d-badge">AASHTO 1993</span>';
+  html += '</div>';
+  html += '</div>';
+
+  // ── METRICS ──
+  html += '<div class="result-title fade-up-2">Computed Values</div>';
+  html += '<div class="metrics-grid fade-up-2">';
+
+  var mets = [
+    {label:'W18 (Design ESAL)', value:fmtE(p.W18), unit:'', src:'ADTT \u00d7 EF \u00d7 365 \u00d7 GF \u00d7 LDF'},
+    {label:'Growth Factor GF',  value:fmt(p.GF,3),  unit:'', src:''},
+    {label:'Design k',          value:fmt(p.k,0),   unit:'pci', src:''},
+    {label:'Elastic Modulus Ec',value:(p.Ec/1e6).toFixed(3), unit:'\u00d710\u2076 psi', src:''},
+    {label:'Reliability Zr',    value:fmt(p.Zr,3),  unit:'', src:''},
+    {label:'\u0394PSI',         value:fmt(p.dPSI,1),unit:'', src:''},
+  ];
+
+  mets.forEach(function(m) {
+    html += '<div class="metric-card">';
+    html += '<div class="metric-label">' + m.label + '</div>';
+    html += '<div class="metric-value">' + m.value;
+    if (m.unit) html += '<span class="metric-unit">' + m.unit + '</span>';
+    html += '</div>';
+    html += '';
+    html += '</div>';
+  });
+  html += '</div>';
+
+  // ── STEPS TABLE ──
+  html += '<div class="result-title fade-up-3">Step-by-Step Calculation</div>';
+  html += '<div class="steps-table fade-up-3">';
+  html += '<div class="steps-row header"><span>#</span><span>Parameter</span><span>Formula / Source</span><span style="text-align:right">Value</span></div>';
+
+  var steps = [
+    ['01', 'ADTT',               'AADT \u00d7 Truck%',                          fmt(p.ADTT,0)+' trucks/day'],
+    ['02', 'Growth Factor GF',   '[(1+'+fmt(p.r*100,1)+'%)\u207f\u22121]/r',    fmt(p.GF,3)],
+    ['03', 'Lane Dist. LDF',     '('+p.lanes+' lanes)',           fmt(p.LDF,2)],
+    ['04', 'W18 (Design ESAL)',  'ADTT \u00d7 EF \u00d7 365 \u00d7 GF \u00d7 LDF', fmtE(p.W18)],
+    ['05', 'Composite k',        'Subbase composite',                      p.k.toFixed(0)+' pci'],
+    ['06', 'Elastic Modulus Ec', '57,000 × √f\'c',       (p.Ec/1e6).toFixed(3)+' \u00d710\u2076 psi'],
+    ['07', 'Reliability Factor Zr','R='+p.R+'%',     fmt(p.Zr,3)],
+    ['08', 'Std. Deviation S\u2080','Fixed value',  '0.29'],
+    ['09', '\u0394PSI',          'p\u1d35 \u2212 p\u209c = 4.5 \u2212 '+p.pt,   fmt(p.dPSI,1)],
+    ['10', 'log W18 (target)',   'log\u2081\u2080(W18)',                         fmt(p.target,4)],
+    ['11', 'D — exact iteration','RHS ≥ log W18',               fmt(p.D,2)+' in'],
+    ['12', 'D — rounded',        'Nearest ½"',          p.D_rounded+' in'],
+  ];
+
+  steps.forEach(function(s) {
+    html += '<div class="steps-row">';
+    html += '<span class="step-num">' + s[0] + '</span>';
+    html += '<span class="step-param">' + s[1] + '</span>';
+    html += '<span class="step-formula">' + s[2] + '</span>';
+    html += '<span class="step-value">' + s[3] + '</span>';
+    html += '</div>';
+  });
+  html += '</div>';
+
+  // ── CROSS SECTION ──
+  html += '<div class="result-title fade-up-4">Pavement Cross-Section</div>';
+  html += '<div class="cross-section fade-up-4">' + buildSVG(p.D_rounded, p.k) + '</div>';
+
+  // ── FORMULA REFERENCE ──
+  
+
+
+  c.innerHTML = html;
+}
+
+function buildSVG(D, k) {
+  var W = 580, cx = W / 2;
+  var groundY = 230, subgradeH = 38, subbaseH = 30;
+  var slabPx = Math.max(50, Math.min(120, D * 5.5));
+  var baseY = groundY - subgradeH - subbaseH;
+  var slabY = baseY - slabPx;
+  var totalH = slabY - 20 + groundY + 20;
+
+  var svg = '<svg viewBox="0 0 ' + W + ' ' + totalH + '" xmlns="http://www.w3.org/2000/svg">';
+  svg += '<defs><marker id="arrowhead" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#5b7cfa"/></marker></defs>';
+  svg += '<line x1="' + cx + '" y1="' + (slabY-28) + '" x2="' + cx + '" y2="' + (slabY+2) + '" stroke="#5b7cfa" stroke-width="2" marker-end="url(#arrowhead)"/>';
+  svg += '<text x="' + cx + '" y="' + (slabY-32) + '" fill="#5b7cfa" font-family="JetBrains Mono,monospace" font-size="10" text-anchor="middle">W18 (18-kip ESAL)</text>';
+  svg += '<rect x="60" y="' + slabY + '" width="' + (cx-80) + '" height="' + slabPx + '" fill="#1c2644" stroke="#2e4070" stroke-width="1.5"/>';
+  svg += '<rect x="' + (cx+20) + '" y="' + slabY + '" width="' + (cx-80) + '" height="' + slabPx + '" fill="#1c2644" stroke="#2e4070" stroke-width="1.5"/>';
+  svg += '<rect x="' + (cx-20) + '" y="' + slabY + '" width="40" height="' + slabPx + '" fill="#0c0d13" stroke="#2c2e48" stroke-dasharray="4,3" stroke-width="1"/>';
+  svg += '<text x="82" y="' + (slabY+slabPx/2+4) + '" fill="#4a6ea8" font-family="JetBrains Mono,monospace" font-size="10">PCC SLAB</text>';
+  svg += '<text x="' + cx + '" y="' + (slabY+slabPx+13) + '" fill="#2c2e48" font-family="JetBrains Mono,monospace" font-size="9" text-anchor="middle">TRANSVERSE JOINT</text>';
+  svg += '<line x1="42" y1="' + slabY + '" x2="42" y2="' + baseY + '" stroke="#5b7cfa" stroke-width="1.2"/>';
+  svg += '<line x1="36" y1="' + slabY + '" x2="48" y2="' + slabY + '" stroke="#5b7cfa" stroke-width="1.2"/>';
+  svg += '<line x1="36" y1="' + baseY + '" x2="48" y2="' + baseY + '" stroke="#5b7cfa" stroke-width="1.2"/>';
+  svg += '<text x="20" y="' + (slabY+slabPx/2+4) + '" fill="#5b7cfa" font-family="JetBrains Mono,monospace" font-size="10" text-anchor="middle">D=' + D + '"</text>';
+  svg += '<rect x="60" y="' + baseY + '" width="' + (W-120) + '" height="' + subbaseH + '" fill="#131520" stroke="#222336" stroke-width="1.2"/>';
+  svg += '<text x="' + cx + '" y="' + (baseY+subbaseH/2+4) + '" fill="#2e3150" font-family="JetBrains Mono,monospace" font-size="10" text-anchor="middle">SUBBASE / BASE COURSE</text>';
+  svg += '<rect x="60" y="' + groundY + '" width="' + (W-120) + '" height="' + subgradeH + '" fill="#141620" stroke="#222336" stroke-width="1"/>';
+  svg += '<text x="' + cx + '" y="' + (groundY+subgradeH/2+4) + '" fill="#3a3d56" font-family="JetBrains Mono,monospace" font-size="10" text-anchor="middle">SUBGRADE  k = ' + k.toFixed(0) + ' pci</text>';
+  for (var i = 0; i < 9; i++) {
+    var x0 = 60 + i * 58;
+    svg += '<line x1="' + x0 + '" y1="' + (groundY+subgradeH) + '" x2="' + (x0-14) + '" y2="' + (groundY+subgradeH+13) + '" stroke="#1e2030" stroke-width="1.5"/>';
+  }
+  svg += '</svg>';
+  return svg;
+}
+
+function showError(msg) {
+  document.getElementById('placeholder').style.display = 'none';
+  var c = document.getElementById('results-content');
+  c.style.display = 'block';
+  c.innerHTML = '<div class="error-card">&#9888;&nbsp; ' + msg + '</div>';
+}
+
+/* INIT */
+calcEc();
+updateCompositeK();
+</script>
+</body>
+</html>
