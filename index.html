@@ -205,12 +205,8 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         </div>
         <div class="field">
           <label>Terminal PSI pt <span class="src">Section 2.2.1</span></label>
-          <select id="pt">
-            <option value="3.0">3.0</option>
-            <option value="2.5" selected>2.5</option>
-            <option value="2.0">2.0</option>
-            <option value="1.5">1.5</option>
-          </select>
+          <input type="number" id="pt" value="2.5" min="0.1" max="4.4" step="0.1"/>
+          <div class="hint">Must be less than pi = 4.5. Typical range: 1.5 to 3.0.</div>
         </div>
       </div>
 
