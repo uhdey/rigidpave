@@ -6,19 +6,25 @@
 <title>RIGIDPAVE - AASHTO Rigid Pavement Design</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
-:root{--bg:#0c0d13;--surface:#12131c;--surface2:#191a26;--surface3:#20213a;--border:#222336;--border2:#2c2e4a;--text:#dde1f0;--muted:#565878;--accent:#5b7cfa;--accent2:#38bdf8;--red:#ef4444;--mono:'JetBrains Mono',monospace;--sans:'Inter',sans-serif;}
+:root{--bg:#0c0d13;--surface:#12131c;--surface2:#191a26;--surface3:#20213a;--border:#222336;--border2:#2c2e4a;--text:#dde1f0;--muted:#565878;--accent:#5b7cfa;--accent2:#38bdf8;--red:#ef4444;--green:#10b981;--mono:'JetBrains Mono',monospace;--sans:'Inter',sans-serif;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13px;min-height:100vh;}
 ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px;}
 header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 32px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-.logo{display:flex;align-items:center;gap:12px;}.logo-mark{width:34px;height:34px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:500;color:#fff;}.logo-text{font-size:15px;font-weight:700;color:var(--text);letter-spacing:-0.3px;}.logo-sub{font-size:11px;color:var(--muted);margin-top:1px;}
+.logo{display:flex;align-items:center;gap:12px;}
+.logo-mark{width:34px;height:34px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:500;color:#fff;}
+.logo-text{font-size:15px;font-weight:700;color:var(--text);letter-spacing:-0.3px;}
+.logo-sub{font-size:11px;color:var(--muted);margin-top:1px;}
 .header-tag{font-family:var(--mono);font-size:10px;color:var(--accent);border:1px solid rgba(91,124,250,0.25);background:rgba(91,124,250,0.07);padding:5px 12px;border-radius:4px;letter-spacing:0.5px;}
-.app{display:grid;grid-template-columns:420px 1fr;height:calc(100vh - 58px);}
+.app{display:grid;grid-template-columns:440px 1fr;height:calc(100vh - 58px);}
 .sidebar{background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;}
-.section{border-bottom:1px solid var(--border);padding:20px 24px;}.section-header{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+.section{border-bottom:1px solid var(--border);padding:20px 24px;}
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
 .section-icon{width:24px;height:24px;background:var(--surface2);border:1px solid var(--border2);border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--accent);font-weight:500;flex-shrink:0;}
 .section-title{font-size:11px;font-weight:600;color:var(--text);text-transform:uppercase;letter-spacing:0.9px;}
-.field{margin-bottom:14px;}.field:last-child{margin-bottom:0;}.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.field{margin-bottom:14px;}.field:last-child{margin-bottom:0;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.field-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
 label{display:block;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;}
 label .src{font-family:var(--mono);font-size:9px;color:rgba(56,189,248,0.6);text-transform:none;font-weight:400;margin-left:6px;}
 input[type="number"],select{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:var(--mono);font-size:13px;padding:9px 12px;outline:none;transition:border-color 0.2s,box-shadow 0.2s;-moz-appearance:textfield;appearance:none;-webkit-appearance:none;}
@@ -27,19 +33,25 @@ input[type="number"]:focus,select:focus{border-color:var(--accent);box-shadow:0 
 input[readonly]{background:rgba(56,189,248,0.05);color:var(--accent2);cursor:default;border-color:rgba(56,189,248,0.15);}
 select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23565878' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;cursor:pointer;}
 .hint{font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:5px;line-height:1.6;}
-.ref-table{width:100%;border-collapse:collapse;margin-top:10px;font-family:var(--mono);font-size:10px;}
-.ref-table th{background:var(--surface3);color:var(--muted);font-weight:600;padding:6px 10px;text-align:left;border:1px solid var(--border2);text-transform:uppercase;letter-spacing:0.4px;}
+.pill{display:flex;align-items:center;justify-content:space-between;background:rgba(56,189,248,0.05);border:1px solid rgba(56,189,248,0.15);border-radius:6px;padding:9px 14px;margin-top:8px;}
+.pill-label{font-size:10px;color:var(--muted);font-weight:500;}
+.pill-value{font-family:var(--mono);font-size:14px;color:var(--accent2);font-weight:500;}
+.pill-unit{font-family:var(--mono);font-size:11px;color:var(--muted);margin-left:4px;}
+.ref-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;font-weight:600;margin-top:14px;margin-bottom:6px;}
+.ref-table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:10px;}
+.ref-table th{background:var(--surface3);color:var(--muted);font-weight:600;padding:5px 10px;text-align:left;border:1px solid var(--border2);text-transform:uppercase;letter-spacing:0.3px;}
 .ref-table td{padding:5px 10px;border:1px solid var(--border);color:var(--text);}
 .ref-table tr:hover td{background:var(--surface2);}
-.ref-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;font-weight:600;margin-top:12px;margin-bottom:6px;}
 .radio-group{display:flex;flex-direction:column;gap:6px;}
 .radio-option{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--surface2);border:1px solid var(--border2);border-radius:6px;cursor:pointer;transition:border-color 0.2s,background 0.2s;user-select:none;}
 .radio-option:hover{border-color:rgba(91,124,250,0.35);background:var(--surface3);}
 .radio-option.selected{border-color:var(--accent);background:rgba(91,124,250,0.08);}
 .radio-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--border2);flex-shrink:0;margin-top:2px;transition:all 0.2s;}
 .radio-option.selected .radio-dot{border-color:var(--accent);background:var(--accent);box-shadow:0 0 0 3px rgba(91,124,250,0.2);}
-.radio-label{font-family:var(--mono);font-size:12px;color:var(--text);font-weight:500;}.radio-sub{font-size:10px;color:var(--muted);margin-top:2px;}
-.subbase-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
+.radio-label{font-family:var(--mono);font-size:12px;color:var(--text);font-weight:500;}
+.radio-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+.j-input-wrap{margin-top:8px;display:none;}
+.j-input-wrap.visible{display:block;}
 .run-wrap{padding:18px 24px;background:var(--surface);position:sticky;bottom:0;border-top:1px solid var(--border);}
 .run-btn{width:100%;height:46px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:0.4px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity 0.2s,transform 0.1s;position:relative;overflow:hidden;}
 .run-btn:hover{opacity:0.88;}.run-btn:active{transform:scale(0.98);}
@@ -53,8 +65,10 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .d-card{background:linear-gradient(135deg,#18234e 0%,#161724 100%);border:1px solid rgba(91,124,250,0.28);border-radius:12px;padding:28px 32px;display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;position:relative;overflow:hidden;}
 .d-card::after{content:'';position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(91,124,250,0.12) 0%,transparent 70%);pointer-events:none;}
 .d-label{font-size:10px;font-weight:600;color:rgba(91,124,250,0.7);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px;}
-.d-value{font-family:var(--mono);font-size:68px;font-weight:500;color:#fff;line-height:1;}.d-unit{font-family:var(--mono);font-size:26px;color:var(--accent);margin-left:8px;}
-.d-mm{font-family:var(--mono);font-size:12px;color:rgba(255,255,255,0.35);margin-top:10px;}.d-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px;z-index:1;}
+.d-value{font-family:var(--mono);font-size:68px;font-weight:500;color:#fff;line-height:1;}
+.d-unit{font-family:var(--mono);font-size:26px;color:var(--accent);margin-left:8px;}
+.d-mm{font-family:var(--mono);font-size:12px;color:rgba(255,255,255,0.35);margin-top:10px;}
+.d-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px;z-index:1;}
 .d-badge{font-family:var(--mono);font-size:11px;color:var(--accent2);background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.2);padding:7px 16px;border-radius:20px;}
 .result-title{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;display:flex;align-items:center;gap:10px;}
 .result-title::after{content:'';flex:1;height:1px;background:var(--border);}
@@ -67,18 +81,25 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .steps-row{display:grid;grid-template-columns:36px 1fr 200px 130px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--border);transition:background 0.15s;}
 .steps-row:last-child{border-bottom:none;}.steps-row:hover{background:var(--surface2);}
 .steps-row.hdr{background:var(--surface2);font-size:9px;color:var(--muted);letter-spacing:0.5px;font-weight:600;text-transform:uppercase;}
-.sn{font-family:var(--mono);font-size:10px;color:var(--accent);}.sp{font-size:12px;color:var(--text);}.sf{font-family:var(--mono);font-size:10px;color:var(--muted);}.sv{font-family:var(--mono);font-size:12px;color:var(--accent2);text-align:right;}
-.cross-wrap{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px 24px;margin-bottom:24px;}.cross-wrap svg{width:100%;display:block;}
+.sn{font-family:var(--mono);font-size:10px;color:var(--accent);}
+.sp{font-size:12px;color:var(--text);}
+.sf{font-family:var(--mono);font-size:10px;color:var(--muted);}
+.sv{font-family:var(--mono);font-size:12px;color:var(--accent2);text-align:right;}
+.cross-wrap{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px 24px;margin-bottom:24px;}
+.cross-wrap svg{width:100%;display:block;}
 .error-card{background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.28);border-radius:8px;padding:16px 20px;color:var(--red);font-size:13px;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-.fu{animation:fadeUp 0.3s ease forwards;}.fu2{animation:fadeUp 0.3s 0.07s ease both;}.fu3{animation:fadeUp 0.3s 0.14s ease both;}.fu4{animation:fadeUp 0.3s 0.21s ease both;}
+.fu{animation:fadeUp 0.3s ease forwards;}
+.fu2{animation:fadeUp 0.3s 0.07s ease both;}
+.fu3{animation:fadeUp 0.3s 0.14s ease both;}
+.fu4{animation:fadeUp 0.3s 0.21s ease both;}
 </style>
 </head>
 <body>
 <header>
   <div class="logo">
     <div class="logo-mark">RP</div>
-    <div><div class="logo-text">RIGIDPAVE</div><div class="logo-sub">AASHTO Rigid Pavement Thickness Design</div></div>
+    <div><div class="logo-text">RIGIDPAVE</div><div class="logo-sub">AASHTO 1993 Rigid Pavement Thickness Design</div></div>
   </div>
   <span class="header-tag">AASHTO 1993</span>
 </header>
@@ -89,10 +110,33 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <!-- 01 TRAFFIC -->
     <div class="section">
       <div class="section-header"><div class="section-icon">01</div><span class="section-title">Traffic</span></div>
+      <div class="field-row">
+        <div class="field">
+          <label>ESAL<sub>0</sub> <span class="src">two-way, t=0</span></label>
+          <input type="number" id="esal0" value="357000" min="1000" step="1000"/>
+        </div>
+        <div class="field">
+          <label>Design Period <span class="src">years</span></label>
+          <input type="number" id="design_period" value="25" min="1" max="50" step="1"/>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Growth Rate <span class="src">%</span></label>
+          <input type="number" id="growth_rate" value="3" min="0" max="20" step="0.5"/>
+        </div>
+        <div class="field">
+          <label>Directional Factor <span class="src">%</span></label>
+          <input type="number" id="dir_factor" value="50" min="1" max="100" step="1"/>
+        </div>
+      </div>
       <div class="field">
-        <label>Design ESAL W18 <span class="src">18-kip equivalent single axle loads</span></label>
-        <input type="number" id="w18" value="5100000" min="1000" step="100000"/>
-        <div class="hint">Total W18 over the full design life.</div>
+        <label>Lane Factor <span class="src">%</span></label>
+        <input type="number" id="lane_factor" value="70" min="1" max="100" step="1"/>
+      </div>
+      <div class="pill">
+        <span class="pill-label">Design W18 = ESAL0 x D x LF x GF</span>
+        <div><span class="pill-value" id="w18_display">--</span><span class="pill-unit">ESALs</span></div>
       </div>
     </div>
 
@@ -101,38 +145,19 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <div class="section-header"><div class="section-icon">02</div><span class="section-title">Subgrade k</span></div>
       <div class="field">
         <label>Modulus of Subgrade Reaction k <span class="src">pci</span></label>
-        <input type="number" id="k_input" value="100" min="25" max="800" step="5"/>
-        <div class="hint">Enter from plate load test or use reference table below.</div>
+        <input type="number" id="k_input" value="300" min="25" max="2000" step="5"/>
+        <div class="hint">Obtain from plate load test or Fig. 3.3 (AASHTO 1993, Part II).</div>
       </div>
-      <div class="ref-label">Typical k values (reference only)</div>
+      <div class="ref-label">Roadbed Soil Quality (AASHTO 1993, Part II, Section 3.2)</div>
       <table class="ref-table">
-        <tr><th>Soil Type</th><th>k (pci)</th></tr>
-        <tr><td>Soft clay</td><td>25 - 50</td></tr>
-        <tr><td>Medium clay</td><td>50 - 100</td></tr>
-        <tr><td>Sandy clay</td><td>100 - 150</td></tr>
-        <tr><td>Sand</td><td>100 - 200</td></tr>
-        <tr><td>Gravel / dense sand</td><td>200 - 300</td></tr>
-        <tr><td>Stabilized subgrade</td><td>300 - 500</td></tr>
+        <tr><th>Quality</th><th>k (pci)</th></tr>
+        <tr><td>Very Good</td><td>&gt; 550</td></tr>
+        <tr><td>Good</td><td>400 - 550</td></tr>
+        <tr><td>Fair</td><td>250 - 350</td></tr>
+        <tr><td>Poor</td><td>150 - 250</td></tr>
+        <tr><td>Very Poor</td><td>&lt; 150</td></tr>
       </table>
-
-      <!-- SUBBASE -->
-      <div class="ref-label" style="margin-top:16px">Subbase (visual / documentation)</div>
-      <div class="subbase-row">
-        <div class="field" style="margin-bottom:0">
-          <label>Type</label>
-          <select id="subbase_type">
-            <option value="none">No Subbase</option>
-            <option value="granular" selected>Granular</option>
-            <option value="cement">Cement-Treated</option>
-            <option value="asphalt">Asphalt-Treated</option>
-          </select>
-        </div>
-        <div class="field" id="sb_thick_wrap" style="margin-bottom:0">
-          <label>Thickness (in)</label>
-          <input type="number" id="subbase_thick" value="6" min="2" max="24" step="1"/>
-        </div>
-      </div>
-      <div class="hint" style="margin-top:8px">Subbase does not affect k calculation here. Adjust k above to reflect composite effect if known.</div>
+      <div class="hint" style="margin-top:8px">If no subbase: k = M<sub>R</sub> / 19.4 (AASHTO 1993, Part II, Section 3.2.1). If subbase present: use Fig. 3.3.</div>
     </div>
 
     <!-- 03 CONCRETE -->
@@ -143,7 +168,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <input type="number" id="fc" value="4000" min="2500" max="8000" step="500"/>
       </div>
       <div class="field">
-        <label>Elastic Modulus Ec <span class="src">auto: 57,000 x sqrt(f'c)</span></label>
+        <label>Elastic Modulus Ec <span class="src">auto: 57,000 x sqrt(f'c) — ACI 318</span></label>
         <input type="number" id="ec" value="3604997" readonly/>
       </div>
       <div class="field">
@@ -155,70 +180,113 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <!-- 04 DESIGN PARAMETERS -->
     <div class="section">
       <div class="section-header"><div class="section-icon">04</div><span class="section-title">Design Parameters</span></div>
+
       <div class="field-row">
         <div class="field">
-          <label>Reliability R</label>
+          <label>Reliability R <span class="src">Table 4.1</span></label>
           <select id="reliability">
-            <option value="75">75% - Low</option>
-            <option value="85">85% - Secondary</option>
-            <option value="90">90% - Primary</option>
-            <option value="95" selected>95% - Major</option>
-            <option value="99">99% - Interstate</option>
+            <option value="50">50%</option>
+            <option value="60">60%</option>
+            <option value="70">70%</option>
+            <option value="75">75%</option>
+            <option value="80">80%</option>
+            <option value="85">85%</option>
+            <option value="90">90%</option>
+            <option value="91">91%</option>
+            <option value="92">92%</option>
+            <option value="93">93%</option>
+            <option value="94">94%</option>
+            <option value="95" selected>95%</option>
+            <option value="96">96%</option>
+            <option value="97">97%</option>
+            <option value="98">98%</option>
+            <option value="99">99%</option>
           </select>
         </div>
         <div class="field">
-          <label>Terminal PSI pt</label>
+          <label>Terminal PSI pt <span class="src">Section 2.2.1</span></label>
           <select id="pt">
-            <option value="3.0">3.0 - Excellent</option>
-            <option value="2.5" selected>2.5 - Good</option>
-            <option value="2.0">2.0 - Fair</option>
-            <option value="1.5">1.5 - Poor</option>
+            <option value="3.0">3.0</option>
+            <option value="2.5" selected>2.5</option>
+            <option value="2.0">2.0</option>
+            <option value="1.5">1.5</option>
           </select>
         </div>
       </div>
 
       <div class="field">
-        <label>Load Transfer Coeff. J</label>
-        <div class="radio-group" id="j_group">
-          <div class="radio-option selected" data-value="3.2">
-            <div class="radio-dot"></div>
-            <div><div class="radio-label">J = 3.2</div><div class="radio-sub">JPCP + Asphalt shoulder + Dowels</div></div>
+        <label>Overall Std. Deviation S0 <span class="src">Section 2.1.3 — rigid: 0.34 to 0.39</span></label>
+        <input type="number" id="s0" value="0.35" min="0.34" max="0.39" step="0.01"/>
+        <div class="hint">Recommended range for rigid pavement: 0.34 (low) to 0.39 (high). Default 0.35.</div>
+      </div>
+
+      <!-- J — Table 2.6 -->
+      <div class="field">
+        <label>Load Transfer Coefficient J <span class="src">Table 2.6, AASHTO 1993</span></label>
+        <div class="field-row" style="margin-bottom:8px">
+          <div class="field" style="margin-bottom:0">
+            <label>Pavement Type</label>
+            <select id="pave_type">
+              <option value="jointed">Plain Jointed / JRCP</option>
+              <option value="crcp">CRCP</option>
+            </select>
           </div>
-          <div class="radio-option" data-value="3.8">
-            <div class="radio-dot"></div>
-            <div><div class="radio-label">J = 3.8</div><div class="radio-sub">JPCP + Asphalt shoulder, no dowels</div></div>
+          <div class="field" style="margin-bottom:0">
+            <label>Shoulder Type</label>
+            <select id="shoulder_type">
+              <option value="asphalt">Asphalt</option>
+              <option value="pcc">Tied P.C.C.</option>
+            </select>
           </div>
-          <div class="radio-option" data-value="2.8">
-            <div class="radio-dot"></div>
-            <div><div class="radio-label">J = 2.8</div><div class="radio-sub">JPCP + Tied PCC shoulder + Dowels</div></div>
-          </div>
+        </div>
+        <div class="field" id="ltd_wrap">
+          <label>Load Transfer Devices</label>
+          <select id="ltd">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+        <div class="pill" id="j_pill" style="margin-top:8px">
+          <span class="pill-label">J range (Table 2.6)</span>
+          <span class="pill-value" id="j_range_display">3.2</span>
+        </div>
+        <div class="field j-input-wrap" id="j_input_wrap">
+          <label style="margin-top:8px">Select J value within range</label>
+          <input type="number" id="j_val" value="3.2" min="2.3" max="4.4" step="0.1"/>
         </div>
       </div>
 
-      <!-- Cd — from Table 3-2.17 & 3-2.18 (AASHTO 1993) -->
-      <div class="field" style="margin-top:14px">
-        <label>Drainage Quality <span class="src">Table 3-2.17 & 3-2.18, AASHTO 1993</span></label>
-        <div class="radio-group" id="cd_group">
-          <div class="radio-option" data-value="1.20">
-            <div class="radio-dot"></div>
-            <div><div class="radio-label">Cd = 1.20 &mdash; Excellent</div><div class="radio-sub">Water removed within 2 hours</div></div>
+      <!-- Cd — Table 2.5 -->
+      <div class="field">
+        <label>Drainage Coefficient Cd <span class="src">Table 2.5, AASHTO 1993</span></label>
+        <div class="field-row" style="margin-bottom:8px">
+          <div class="field" style="margin-bottom:0">
+            <label>Drainage Quality</label>
+            <select id="drainage_quality">
+              <option value="excellent">Excellent (2 hrs)</option>
+              <option value="good" selected>Good (1 day)</option>
+              <option value="fair">Fair (1 week)</option>
+              <option value="poor">Poor (1 month)</option>
+              <option value="verypoor">Very Poor (never)</option>
+            </select>
           </div>
-          <div class="radio-option selected" data-value="1.00">
-            <div class="radio-dot"></div>
-            <div><div class="radio-label">Cd = 1.00 &mdash; Good</div><div class="radio-sub">Water removed within 1 day</div></div>
+          <div class="field" style="margin-bottom:0">
+            <label>Exposure to Moisture</label>
+            <select id="drainage_exposure">
+              <option value="lt1">Less than 1%</option>
+              <option value="1to5" selected>1% to 5%</option>
+              <option value="5to25">5% to 25%</option>
+              <option value="gt25">Greater than 25%</option>
+            </select>
           </div>
-          <div class="radio-option" data-value="0.90">
-            <div class="radio-dot"></div>
-            <div><div class="radio-label">Cd = 0.90 &mdash; Fair</div><div class="radio-sub">Water removed within 1 week</div></div>
-          </div>
-          <div class="radio-option" data-value="0.80">
-            <div class="radio-dot"></div>
-            <div><div class="radio-label">Cd = 0.80 &mdash; Poor</div><div class="radio-sub">Water removed within 1 month</div></div>
-          </div>
-          <div class="radio-option" data-value="0.70">
-            <div class="radio-dot"></div>
-            <div><div class="radio-label">Cd = 0.70 &mdash; Very Poor</div><div class="radio-sub">Water will not drain</div></div>
-          </div>
+        </div>
+        <div class="pill">
+          <span class="pill-label">Cd range (Table 2.5, AASHTO 1993)</span>
+          <span class="pill-value" id="cd_range_display">1.10 - 1.15</span>
+        </div>
+        <div id="cd_input_wrap" style="margin-top:8px">
+          <label style="margin-top:0">Select Cd value within range</label>
+          <input type="number" id="cd_val" value="1.10" min="0.70" max="1.25" step="0.01"/>
         </div>
       </div>
     </div>
@@ -234,7 +302,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <div class="results">
     <div class="placeholder" id="placeholder">
       <div class="placeholder-icon">&#128208;</div>
-      <div class="placeholder-text">Enter design parameters on the left<br/>and click <strong>Calculate Thickness</strong><br/>to run <strong>AASHTO 1993</strong></div>
+      <div class="placeholder-text">Enter design parameters on the left<br/>and click <strong>Calculate Thickness</strong><br/>to run <strong>AASHTO 1993 Eq. 3-41</strong></div>
     </div>
     <div id="out" style="display:none"></div>
   </div>
@@ -242,59 +310,148 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
 <script>
 (function () {
-  var ZR_TABLE = {75:0,80:-0.841,85:-1.037,90:-1.282,95:-1.645,99:-2.327};
 
-  function calcEc(fc) { return Math.round(57000 * Math.sqrt(fc)); }
+  /* ── ZR TABLE 4.1, AASHTO 1993 ── */
+  var ZR_TABLE = {
+    50:0.000, 60:-0.253, 70:-0.524, 75:-0.674,
+    80:-0.841, 85:-1.037, 90:-1.282, 91:-1.340,
+    92:-1.405, 93:-1.476, 94:-1.555, 95:-1.645,
+    96:-1.751, 97:-1.881, 98:-2.054, 99:-2.327
+  };
 
-  function rhs(D, Zr, S0, dPSI, pt, Sc, Cd, J, Ec, k) {
-    if (dPSI <= 0 || D <= 0) return -999;
-    var t1 = Zr * S0;
-    var t2 = 7.35 * Math.log10(D + 1) - 0.06;
-    var t3 = Math.log10(dPSI / 3.0) / (1 + 1.624e7 / Math.pow(D + 1, 8.46));
-    var num = Sc * Cd * (Math.pow(D, 0.75) - 1.132);
-    var den = 215.63 * J * (Math.pow(D, 0.75) - 18.42 / Math.pow(Ec / k, 0.25));
-    if (den <= 0 || num <= 0) return -999;
-    return t1 + t2 + t3 + (4.22 - 0.32 * pt) * Math.log10(num / den);
+  /* ── CD TABLE 2.5, AASHTO 1993 ── */
+  /* [quality][exposure] -> [min, max] */
+  var CD_TABLE = {
+    excellent: {lt1:[1.20,1.25], '1to5':[1.15,1.20], '5to25':[1.10,1.15], gt25:[1.10,1.10]},
+    good:      {lt1:[1.15,1.20], '1to5':[1.10,1.15], '5to25':[1.00,1.10], gt25:[1.00,1.00]},
+    fair:      {lt1:[1.10,1.15], '1to5':[1.00,1.10], '5to25':[0.90,1.00], gt25:[0.90,0.90]},
+    poor:      {lt1:[1.00,1.10], '1to5':[0.90,1.00], '5to25':[0.80,0.90], gt25:[0.80,0.80]},
+    verypoor:  {lt1:[0.90,1.00], '1to5':[0.80,0.90], '5to25':[0.70,0.80], gt25:[0.70,0.70]}
+  };
+
+  /* ── J TABLE 2.6, AASHTO 1993 ── */
+  /* {paveType}{shoulder}{ltd} -> [min, max] or single */
+  var J_TABLE = {
+    jointed: {
+      asphalt: {yes:[3.2,3.2], no:[3.8,4.4]},
+      pcc:     {yes:[2.5,3.1], no:[3.6,4.2]}
+    },
+    crcp: {
+      asphalt: {yes:[2.9,3.2], no:null},
+      pcc:     {yes:[2.3,2.9], no:null}
+    }
+  };
+
+  function calcEc(fc){ return Math.round(57000*Math.sqrt(fc)); }
+
+  /* ── ESAL CALCULATION ── */
+  /* W18 = ESAL0 x D x LF x GF, GF = ((1+r)^Y - 1)/r */
+  function calcW18(){
+    var esal0 = parseFloat(document.getElementById('esal0').value);
+    var Y     = parseFloat(document.getElementById('design_period').value);
+    var r     = parseFloat(document.getElementById('growth_rate').value)/100;
+    var D     = parseFloat(document.getElementById('dir_factor').value)/100;
+    var LF    = parseFloat(document.getElementById('lane_factor').value)/100;
+    if([esal0,Y,r,D,LF].some(isNaN)) return NaN;
+    var GF = r===0 ? Y : ((Math.pow(1+r,Y)-1)/r);
+    return esal0*D*LF*GF;
   }
 
-  function solve(W18, Sc, Ec, k, R, pt, J, Cd) {
-    var Zr = ZR_TABLE[R] !== undefined ? ZR_TABLE[R] : -1.645;
-    var S0 = 0.35;
-    var dPSI = 4.5 - pt;
-    var target = Math.log10(W18);
-    var D = 4.0;
-    while (D <= 80) {
-      if (rhs(D, Zr, S0, dPSI, pt, Sc, Cd, J, Ec, k) >= target)
-        return {D:D, Zr:Zr, S0:S0, dPSI:dPSI, target:target};
-      D += 0.05;
+  function updateW18pill(){
+    var w = calcW18();
+    document.getElementById('w18_display').textContent = isNaN(w)?'--':fE(w);
+  }
+
+  /* ── CD ── */
+  function updateCd(){
+    var q = document.getElementById('drainage_quality').value;
+    var e = document.getElementById('drainage_exposure').value;
+    var range = CD_TABLE[q][e];
+    var lo=range[0], hi=range[1];
+    var rangeEl = document.getElementById('cd_range_display');
+    var inputWrap = document.getElementById('cd_input_wrap');
+    var cdInput = document.getElementById('cd_val');
+    if(lo===hi){
+      rangeEl.textContent = lo.toFixed(2);
+      inputWrap.style.display='none';
+      cdInput.value = lo.toFixed(2);
+    } else {
+      rangeEl.textContent = lo.toFixed(2)+' - '+hi.toFixed(2);
+      cdInput.min=lo; cdInput.max=hi;
+      var cur=parseFloat(cdInput.value);
+      if(isNaN(cur)||cur<lo) cdInput.value=lo.toFixed(2);
+      if(cur>hi) cdInput.value=hi.toFixed(2);
+      inputWrap.style.display='block';
+    }
+  }
+
+  /* ── J ── */
+  function updateJ(){
+    var pt   = document.getElementById('pave_type').value;
+    var sh   = document.getElementById('shoulder_type').value;
+    var ltd  = document.getElementById('ltd').value;
+    var ltdWrap = document.getElementById('ltd_wrap');
+    var jWrap   = document.getElementById('j_input_wrap');
+    var jRange  = document.getElementById('j_range_display');
+    var jVal    = document.getElementById('j_val');
+
+    /* CRCP: no load transfer device choice */
+    if(pt==='crcp'){
+      ltdWrap.style.display='none';
+      ltd='yes';
+    } else {
+      ltdWrap.style.display='block';
+    }
+
+    var entry = J_TABLE[pt][sh][ltd];
+    if(!entry){
+      jRange.textContent='N/A';
+      jWrap.classList.remove('visible');
+      return;
+    }
+    if(entry[0]===entry[1]){
+      /* single value */
+      jRange.textContent=entry[0].toFixed(1);
+      jVal.value=entry[0].toFixed(1);
+      jVal.min=entry[0]; jVal.max=entry[1];
+      jWrap.classList.remove('visible');
+    } else {
+      jRange.textContent=entry[0].toFixed(1)+' - '+entry[1].toFixed(1);
+      jVal.min=entry[0]; jVal.max=entry[1];
+      /* clamp current value to range */
+      var cur=parseFloat(jVal.value);
+      if(isNaN(cur)||cur<entry[0]) jVal.value=entry[0].toFixed(1);
+      if(cur>entry[1]) jVal.value=entry[1].toFixed(1);
+      jWrap.classList.add('visible');
+    }
+  }
+
+  /* ── AASHTO 1993 Eq. 3-41 RHS ── */
+  function rhs(D, Zr, S0, dPSI, pt, Sc, Cd, J, Ec, k){
+    if(dPSI<=0||D<=0) return -999;
+    var t1=Zr*S0;
+    var t2=7.35*Math.log10(D+1)-0.06;
+    var t3=Math.log10(dPSI/3.0)/(1+1.624e7/Math.pow(D+1,8.46));
+    var num=Sc*Cd*(Math.pow(D,0.75)-1.132);
+    var den=215.63*J*(Math.pow(D,0.75)-18.42/Math.pow(Ec/k,0.25));
+    if(den<=0||num<=0) return -999;
+    return t1+t2+t3+(4.22-0.32*pt)*Math.log10(num/den);
+  }
+
+  function solve(W18,Sc,Ec,k,R,pt,J,Cd,S0){
+    var Zr=ZR_TABLE[R];
+    var dPSI=4.5-pt;
+    var target=Math.log10(W18);
+    var D=4.0;
+    while(D<=80){
+      if(rhs(D,Zr,S0,dPSI,pt,Sc,Cd,J,Ec,k)>=target)
+        return {D:D,Zr:Zr,S0:S0,dPSI:dPSI,target:target};
+      D+=0.05;
     }
     return null;
   }
 
-  function wireRadio(id) {
-    var g = document.getElementById(id);
-    g.querySelectorAll('.radio-option').forEach(function(o) {
-      o.addEventListener('click', function() {
-        g.querySelectorAll('.radio-option').forEach(function(x){x.classList.remove('selected');});
-        o.classList.add('selected');
-      });
-    });
-  }
-  function radioVal(id) {
-    var s = document.querySelector('#'+id+' .radio-option.selected');
-    return s ? parseFloat(s.getAttribute('data-value')) : NaN;
-  }
-
-  function updateEc() {
-    var fc = parseFloat(document.getElementById('fc').value);
-    if (!isNaN(fc) && fc > 0) document.getElementById('ec').value = calcEc(fc);
-  }
-
-  function updateSubbaseVis() {
-    var type = document.getElementById('subbase_type').value;
-    document.getElementById('sb_thick_wrap').style.visibility = type === 'none' ? 'hidden' : 'visible';
-  }
-
+  /* ── FORMAT ── */
   function f2(v){return v.toFixed(2);}
   function f3(v){return v.toFixed(3);}
   function fE(v){
@@ -303,171 +460,182 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     return v.toFixed(0);
   }
 
-  function run() {
-    var btn = document.getElementById('run-btn');
+  /* ── RUN ── */
+  function run(){
+    var btn=document.getElementById('run-btn');
     btn.classList.add('running');
-    setTimeout(function(){btn.classList.remove('running');calc();}, 400);
+    setTimeout(function(){btn.classList.remove('running');calc();},400);
   }
 
-  function calc() {
-    var W18 = parseFloat(document.getElementById('w18').value);
+  function calc(){
+    var W18 = calcW18();
     var k   = parseFloat(document.getElementById('k_input').value);
     var fc  = parseFloat(document.getElementById('fc').value);
     var Ec  = calcEc(fc);
     var Sc  = parseFloat(document.getElementById('sc').value);
     var R   = parseInt(document.getElementById('reliability').value);
     var pt  = parseFloat(document.getElementById('pt').value);
-    var J   = radioVal('j_group');
-    var Cd  = radioVal('cd_group');
-    var sbType  = document.getElementById('subbase_type').value;
-    var sbThick = parseFloat(document.getElementById('subbase_thick').value);
+    var S0  = parseFloat(document.getElementById('s0').value);
+    var Cd  = parseFloat(document.getElementById('cd_val').value);
 
-    if (isNaN(W18)||W18<=0) { err('Enter a valid W18.'); return; }
-    if (isNaN(k)||k<=0)     { err('Enter a valid k value.'); return; }
-    if (isNaN(fc)||fc<=0)   { err("Enter a valid f'c."); return; }
-    if (isNaN(Sc)||Sc<=0)   { err("Enter a valid Sc'."); return; }
-    if (isNaN(J))            { err('Select a J value.'); return; }
-    if (isNaN(Cd))           { err('Select a Cd value.'); return; }
-    if (pt >= 4.5)           { err('Terminal PSI pt must be less than 4.5.'); return; }
+    /* J: single value or user selected */
+    var pt2  = document.getElementById('pave_type').value;
+    var sh   = document.getElementById('shoulder_type').value;
+    var ltd  = pt2==='crcp'?'yes':document.getElementById('ltd').value;
+    var entry= J_TABLE[pt2][sh][ltd];
+    var J;
+    if(!entry){err('This J combination is N/A per Table 2.6.');return;}
+    if(entry[0]===entry[1]){
+      J=entry[0];
+    } else {
+      J=parseFloat(document.getElementById('j_val').value);
+      if(isNaN(J)||J<entry[0]||J>entry[1]){err('J value must be within '+entry[0]+' - '+entry[1]+'.');return;}
+    }
 
-    var sol = solve(W18, Sc, Ec, k, R, pt, J, Cd);
-    if (!sol) { err('W18 = '+fE(W18)+' exceeds capacity (D > 80 in). Check inputs.'); return; }
+    /* Validate */
+    if(isNaN(W18)||W18<=0){err('Check traffic inputs.');return;}
+    if(isNaN(k)||k<=0)    {err('Enter a valid k value.');return;}
+    if(isNaN(fc)||fc<=0)  {err("Enter a valid f'c.");return;}
+    if(isNaN(Sc)||Sc<=0)  {err("Enter a valid Sc'.");return;}
+    if(isNaN(S0)||S0<0.34||S0>0.39){err('S0 must be between 0.34 and 0.39.');return;}
+    if(pt>=4.5)           {err('Terminal PSI pt must be less than 4.5.');return;}
 
-    var Dr = Math.ceil(sol.D * 2) / 2;
+    var sol=solve(W18,Sc,Ec,k,R,pt,J,Cd,S0);
+    if(!sol){err('W18 = '+fE(W18)+' exceeds capacity (D > 80 in). Check inputs.');return;}
+
+    var Dr=Math.ceil(sol.D*2)/2;
+    var esal0=parseFloat(document.getElementById('esal0').value);
+    var Y=parseFloat(document.getElementById('design_period').value);
+    var r=parseFloat(document.getElementById('growth_rate').value)/100;
+    var D2=parseFloat(document.getElementById('dir_factor').value)/100;
+    var LF=parseFloat(document.getElementById('lane_factor').value)/100;
+    var GF=r===0?Y:((Math.pow(1+r,Y)-1)/r);
+
     render({
-      W18:W18, k:k, fc:fc, Ec:Ec, Sc:Sc,
-      R:R, pt:pt, J:J, Cd:Cd,
-      Zr:sol.Zr, S0:sol.S0, dPSI:sol.dPSI,
-      D:sol.D, Dr:Dr, Dmm:Dr*25.4, target:sol.target,
-      sbType:sbType, sbThick:sbType==='none'?0:sbThick
+      W18:W18,esal0:esal0,Y:Y,r:r,D2:D2,LF:LF,GF:GF,
+      k:k,fc:fc,Ec:Ec,Sc:Sc,
+      R:R,pt:pt,S0:S0,J:J,Cd:Cd,
+      Zr:sol.Zr,dPSI:sol.dPSI,
+      D:sol.D,Dr:Dr,Dmm:Dr*25.4,target:sol.target
     });
   }
 
-  function render(p) {
+  /* ── RENDER ── */
+  function render(p){
     document.getElementById('placeholder').style.display='none';
-    var o=document.getElementById('out'); o.style.display='block';
+    var o=document.getElementById('out');o.style.display='block';
     var h='';
 
     h+='<div class="d-card fu"><div>';
     h+='<div class="d-label">Design Slab Thickness &mdash; Rounded to Nearest 1/2"</div>';
     h+='<div><span class="d-value">'+p.Dr+'</span><span class="d-unit"> in</span></div>';
-    h+='<div class="d-mm">'+Math.round(p.Dmm)+' mm &middot; Exact: '+f2(p.D)+' in</div>';
+    h+='<div class="d-mm">'+Math.round(p.Dmm)+' mm &middot; Exact iteration: '+f2(p.D)+' in</div>';
     h+='</div><div class="d-right"><span class="d-badge">AASHTO 1993 Eq. 3-41</span></div></div>';
 
-    h+='<div class="result-title fu2">Computed Values</div><div class="metrics-grid fu2">';
+    h+='<div class="result-title fu2">Computed Values</div>';
+    h+='<div class="metrics-grid fu2">';
     [
-      ['Design ESAL W18', fE(p.W18), ''],
-      ['Design k', p.k.toFixed(0), 'pci'],
-      ['Ec', (p.Ec/1e6).toFixed(3), 'x10^6 psi'],
-      ['Reliability Zr', f3(p.Zr), ''],
-      ['Delta PSI', p.dPSI.toFixed(1), ''],
-      ['log10(W18)', f3(p.target), ''],
+      ['Design W18',fE(p.W18),''],
+      ['Growth Factor GF',f2(p.GF),''],
+      ['Design k',p.k.toFixed(0),'pci'],
+      ['Ec',(p.Ec/1e6).toFixed(3),'x10^6 psi'],
+      ['Reliability Zr',f3(p.Zr),''],
+      ['Delta PSI',p.dPSI.toFixed(1),''],
     ].forEach(function(m){
-      h+='<div class="metric-card"><div class="metric-label">'+m[0]+'</div><div class="metric-value">'+m[1];
+      h+='<div class="metric-card"><div class="metric-label">'+m[0]+'</div>';
+      h+='<div class="metric-value">'+m[1];
       if(m[2]) h+='<span class="metric-unit"> '+m[2]+'</span>';
       h+='</div></div>';
     });
     h+='</div>';
 
-    h+='<div class="result-title fu3">Step-by-Step Calculation</div><div class="steps-table fu3">';
+    h+='<div class="result-title fu3">Step-by-Step Calculation</div>';
+    h+='<div class="steps-table fu3">';
     h+='<div class="steps-row hdr"><span>#</span><span>Parameter</span><span>Formula / Source</span><span style="text-align:right">Value</span></div>';
     [
-      ['01','Design ESAL W18','User input',fE(p.W18)],
-      ['02','Subgrade k','User input (from test or ref table)',p.k.toFixed(0)+' pci'],
-      ['03',"f'c",'User input',p.fc.toFixed(0)+' psi'],
-      ['04','Ec',"57,000 x sqrt(f'c)",(p.Ec/1e6).toFixed(3)+' x10^6 psi'],
-      ['05',"Sc'",'User input',p.Sc.toFixed(0)+' psi'],
-      ['06','Reliability Zr','R = '+p.R+'%',f3(p.Zr)],
-      ['07','Std Dev S0','AASHTO 1993 (rigid)','0.35'],
-      ['08','Initial PSI pi','AASHTO default','4.5'],
-      ['09','Terminal PSI pt','User input',p.pt.toFixed(1)],
-      ['10','Delta PSI','pi - pt = 4.5 - '+p.pt.toFixed(1),p.dPSI.toFixed(1)],
-      ['11','J','User selection',p.J.toFixed(1)],
-      ['12','Cd','Table 3-2.18, AASHTO 1993',p.Cd.toFixed(2)],
-      ['13','log10(W18)','log10(W18)',f3(p.target)],
-      ['14','D exact','Iterate RHS >= log10(W18)',f2(p.D)+' in'],
-      ['15','D rounded','Round up to nearest 0.5"',p.Dr+' in'],
+      ['01','ESAL0 (two-way, t=0)','User input',fE(p.esal0)],
+      ['02','Directional Factor D','User input',(p.D2*100).toFixed(0)+'%'],
+      ['03','Lane Factor LF','User input',(p.LF*100).toFixed(0)+'%'],
+      ['04','Growth Rate r','User input',(p.r*100).toFixed(1)+'%'],
+      ['05','Design Period Y','User input',p.Y+' years'],
+      ['06','Growth Factor GF','((1+r)^Y - 1) / r',f3(p.GF)],
+      ['07','Design W18','ESAL0 x D x LF x GF',fE(p.W18)],
+      ['08','log10(W18)','log10(W18)',f3(p.target)],
+      ['09','Design k','User input (plate test or Fig. 3.3)',p.k.toFixed(0)+' pci'],
+      ['10',"f'c",'User input',p.fc.toFixed(0)+' psi'],
+      ['11','Ec',"57,000 x sqrt(f'c) — ACI 318",(p.Ec/1e6).toFixed(3)+' x10^6 psi'],
+      ['12',"Sc'",'User input',p.Sc.toFixed(0)+' psi'],
+      ['13','Reliability Zr','Table 4.1, AASHTO 1993 — R='+p.R+'%',f3(p.Zr)],
+      ['14','Std. Deviation S0','Section 2.1.3, AASHTO 1993',p.S0.toFixed(2)],
+      ['15','Initial PSI pi','AASHTO 1993 default','4.5'],
+      ['16','Terminal PSI pt','User input',p.pt.toFixed(1)],
+      ['17','Delta PSI','pi - pt = 4.5 - '+p.pt.toFixed(1),p.dPSI.toFixed(1)],
+      ['18','J','Table 2.6, AASHTO 1993',p.J.toFixed(1)],
+      ['19','Cd','Table 2.5, AASHTO 1993',p.Cd.toFixed(2)],
+      ['20','D exact','Iterate Eq. 3-41 RHS >= log10(W18)',f2(p.D)+' in'],
+      ['21','D rounded','Round up to nearest 0.5"',p.Dr+' in'],
     ].forEach(function(s){
       h+='<div class="steps-row"><span class="sn">'+s[0]+'</span><span class="sp">'+s[1]+'</span><span class="sf">'+s[2]+'</span><span class="sv">'+s[3]+'</span></div>';
     });
     h+='</div>';
 
-    h+='<div class="result-title fu4">Pavement Cross-Section</div><div class="cross-wrap fu4">'+buildSVG(p.Dr, p.k, p.sbType, p.sbThick)+'</div>';
+    h+='<div class="result-title fu4">Pavement Cross-Section</div>';
+    h+='<div class="cross-wrap fu4">'+buildSVG(p.Dr,p.k)+'</div>';
     o.innerHTML=h;
   }
 
-  function buildSVG(D, k, sbType, sbThick) {
-    var W=600, cx=W/2;
-    var groundY=260, sgH=40;
-    var sbH = sbType==='none' ? 0 : Math.max(20, Math.min(60, sbThick*3));
-    var slabPx = Math.max(50, Math.min(140, D*5.5));
-    var baseY = groundY - sgH - sbH;
-    var slabY = baseY - slabPx;
-    var H = slabY - 40 + groundY + 20;
-
-    var sbLabel = {none:'',granular:'GRANULAR SUBBASE',cement:'CEMENT-TREATED SUBBASE',asphalt:'ASPHALT-TREATED SUBBASE'}[sbType]||'';
-    var sbColor = {none:'',granular:'#131a20',cement:'#141a16',asphalt:'#111111'}[sbType]||'#131520';
-    var sbStroke = {none:'',granular:'#1e2a30',cement:'#1a2820',asphalt:'#1a1a1a'}[sbType]||'#222336';
-
+  function buildSVG(D,k){
+    var W=600,cx=W/2,groundY=240,sgH=40,sbH=30;
+    var slabPx=Math.max(50,Math.min(140,D*5.5));
+    var baseY=groundY-sgH-sbH,slabY=baseY-slabPx,H=slabY-40+groundY+20;
     var s='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">';
     s+='<defs><marker id="ah" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#5b7cfa"/></marker></defs>';
-
-    // Load arrow
     s+='<line x1="'+cx+'" y1="'+(slabY-32)+'" x2="'+cx+'" y2="'+(slabY+2)+'" stroke="#5b7cfa" stroke-width="2" marker-end="url(#ah)"/>';
     s+='<text x="'+cx+'" y="'+(slabY-36)+'" fill="#5b7cfa" font-family="JetBrains Mono,monospace" font-size="10" text-anchor="middle">W18 (18-kip ESAL)</text>';
-
-    // PCC slab — two panels with joint
     s+='<rect x="60" y="'+slabY+'" width="'+(cx-80)+'" height="'+slabPx+'" fill="#1c2644" stroke="#2e4070" stroke-width="1.5"/>';
     s+='<rect x="'+(cx+20)+'" y="'+slabY+'" width="'+(cx-80)+'" height="'+slabPx+'" fill="#1c2644" stroke="#2e4070" stroke-width="1.5"/>';
     s+='<rect x="'+(cx-20)+'" y="'+slabY+'" width="40" height="'+slabPx+'" fill="#0c0d13" stroke="#2c2e48" stroke-dasharray="4,3" stroke-width="1"/>';
     s+='<text x="90" y="'+(slabY+slabPx/2+4)+'" fill="#4a6ea8" font-family="JetBrains Mono,monospace" font-size="10">PCC SLAB</text>';
     s+='<text x="'+cx+'" y="'+(slabY+slabPx+13)+'" fill="#2c2e48" font-family="JetBrains Mono,monospace" font-size="9" text-anchor="middle">TRANSVERSE JOINT</text>';
-
-    // Dimension arrow for D
     s+='<line x1="44" y1="'+slabY+'" x2="44" y2="'+baseY+'" stroke="#5b7cfa" stroke-width="1.2"/>';
     s+='<line x1="38" y1="'+slabY+'" x2="50" y2="'+slabY+'" stroke="#5b7cfa" stroke-width="1.2"/>';
     s+='<line x1="38" y1="'+baseY+'" x2="50" y2="'+baseY+'" stroke="#5b7cfa" stroke-width="1.2"/>';
     s+='<text x="22" y="'+(slabY+slabPx/2+4)+'" fill="#5b7cfa" font-family="JetBrains Mono,monospace" font-size="10" text-anchor="middle">D='+D+'"</text>';
-
-    // Subbase
-    if(sbType!=='none' && sbH>0){
-      s+='<rect x="60" y="'+baseY+'" width="'+(W-120)+'" height="'+sbH+'" fill="'+sbColor+'" stroke="'+sbStroke+'" stroke-width="1.2"/>';
-      s+='<text x="'+cx+'" y="'+(baseY+sbH/2+4)+'" fill="#2e3a50" font-family="JetBrains Mono,monospace" font-size="10" text-anchor="middle">'+sbLabel+' ('+sbThick+'")</text>';
-      // Subbase dimension
-      s+='<line x1="'+(W-44)+'" y1="'+baseY+'" x2="'+(W-44)+'" y2="'+groundY+'" stroke="#38bdf8" stroke-width="1" opacity="0.4"/>';
-      s+='<line x1="'+(W-50)+'" y1="'+baseY+'" x2="'+(W-38)+'" y2="'+baseY+'" stroke="#38bdf8" stroke-width="1" opacity="0.4"/>';
-      s+='<line x1="'+(W-50)+'" y1="'+groundY+'" x2="'+(W-38)+'" y2="'+groundY+'" stroke="#38bdf8" stroke-width="1" opacity="0.4"/>';
-      s+='<text x="'+(W-28)+'" y="'+(baseY+sbH/2+4)+'" fill="#38bdf8" font-family="JetBrains Mono,monospace" font-size="9" text-anchor="middle" opacity="0.5">'+sbThick+'"</text>';
-    }
-
-    // Subgrade
+    s+='<rect x="60" y="'+baseY+'" width="'+(W-120)+'" height="'+sbH+'" fill="#131520" stroke="#222336" stroke-width="1.2"/>';
+    s+='<text x="'+cx+'" y="'+(baseY+sbH/2+4)+'" fill="#2e3150" font-family="JetBrains Mono,monospace" font-size="10" text-anchor="middle">SUBBASE / BASE COURSE</text>';
     s+='<rect x="60" y="'+groundY+'" width="'+(W-120)+'" height="'+sgH+'" fill="#141620" stroke="#222336" stroke-width="1"/>';
     s+='<text x="'+cx+'" y="'+(groundY+sgH/2+4)+'" fill="#3a3d56" font-family="JetBrains Mono,monospace" font-size="10" text-anchor="middle">SUBGRADE  k = '+k.toFixed(0)+' pci</text>';
-
-    // Hatching below subgrade
-    for(var i=0;i<10;i++){
-      var x0=60+i*54;
-      s+='<line x1="'+x0+'" y1="'+(groundY+sgH)+'" x2="'+(x0-14)+'" y2="'+(groundY+sgH+14)+'" stroke="#1e2030" stroke-width="1.5"/>';
-    }
-    s+='</svg>';
-    return s;
+    for(var i=0;i<10;i++){var x0=60+i*54;s+='<line x1="'+x0+'" y1="'+(groundY+sgH)+'" x2="'+(x0-14)+'" y2="'+(groundY+sgH+14)+'" stroke="#1e2030" stroke-width="1.5"/>';}
+    return s+'</svg>';
   }
 
-  function err(msg) {
+  function err(msg){
     document.getElementById('placeholder').style.display='none';
     var o=document.getElementById('out');o.style.display='block';
     o.innerHTML='<div class="error-card">&#9888; '+msg+'</div>';
   }
 
-  document.addEventListener('DOMContentLoaded', function() {
-    wireRadio('j_group');
-    wireRadio('cd_group');
-    document.getElementById('fc').addEventListener('input', updateEc);
-    document.getElementById('subbase_type').addEventListener('change', updateSubbaseVis);
-    document.getElementById('run-btn').addEventListener('click', run);
-    updateEc();
-    updateSubbaseVis();
+  /* ── WIRE EVENTS ── */
+  document.addEventListener('DOMContentLoaded',function(){
+    ['esal0','design_period','growth_rate','dir_factor','lane_factor'].forEach(function(id){
+      document.getElementById(id).addEventListener('input',updateW18pill);
+    });
+    document.getElementById('fc').addEventListener('input',function(){
+      var fc=parseFloat(document.getElementById('fc').value);
+      if(!isNaN(fc)&&fc>0) document.getElementById('ec').value=calcEc(fc);
+    });
+    ['drainage_quality','drainage_exposure'].forEach(function(id){
+      document.getElementById(id).addEventListener('change',updateCd);
+    });
+    ['pave_type','shoulder_type','ltd'].forEach(function(id){
+      document.getElementById(id).addEventListener('change',updateJ);
+    });
+    document.getElementById('run-btn').addEventListener('click',run);
+    updateW18pill();
+    updateCd();
+    updateJ();
   });
+
 })();
 </script>
 </body>
